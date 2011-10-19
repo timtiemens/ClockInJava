@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+      Purpose:   Make it easy to create 'one jar' .jar applications  
+          Use:   use Ant's 'import' task to import this .xml
+ -->
+<project name="onejar" default="main" basedir=".">
+
+  <!-- pick up any properties we need -->
+  <dirname property="imported.basedir" file="${ant.file.onejar}"/>
+
+  <property file="${imported.basedir}/onejar.properties"/>
+
+  <property name="onejar.build.dir" value="${basedir}/build/onejar"/>
+
+  <!--
+          MAIN TARGET
+   -->
+  <macrodef name="build-onejar">
+    <attribute name="destfiledir"/>
+    <!-- these go into 'main.jar' -->
+    <attribute name="Main-Class"/>
+    <attribute name="Class-Path"/>
+    <element   name="main-fileset-elements"/>
+    <!-- these go into the top-level .jar (named app-jarname) -->
+    <attribute name="app-jarname"/>
+    <!-- put your .jar files into libdir -->
+    <attribute name="app-libdir"/>
+    <!-- put your .dll and .so and .a files into binlibdir -->
+    <attribute name="app-binlibdir"/>
+    <element   name="app-extra-fileset-elements" optional="true"/>
+
+    <sequential>
+      <build-onejar-main
+        destfiledir="@{destfiledir}"
+        Main-Class="@{Main-Class}"
+        Class-Path="@{Class-Path}">
+
+        <jar-fileset-elements>
+          <main-fileset-elements/>
+        </jar-fileset-elements>
+      </build-onejar-main>
+      
+      <build-onejar-application
+        destfiledir="@{destfiledir}"
+        app-jarname="@{app-jarname}"
+        app-libdir="@{app-libdir}"
+        app-binlibdir="@{app-binlibdir}"
+        >
+        <extra-fileset-elements>
+          <app-extra-fileset-elements/>
+        </extra-fileset-elements>
+      </build-onejar-application>
+    </sequential>
+  </macrodef>
+  
+
+
+
+  <macrodef name="build-onejar-main">
+   <attribute name="destfiledir"/>
+   <attribute name="Main-Class"/>
+   <attribute name="Class-Path"/>  <!-- NOTE: can we auto-generate this? -->
+   <element name="jar-fileset-elements"/>
+
+    <!-- jar1 -->
+   <sequential>
+      <property name="tmp.manifest.file"
+        value="${onejar.build.dir}/mainapp.manifest"/>
+      <mkdir dir="${onejar.build.dir}"/>
+
+      <echo file="${tmp.manifest.file}" append="no"
+        message="Class-Path: @{Class-Path}${line.separator}"/>
+      <echo file="${tmp.manifest.file}" append="yes"
+        message="Main-Class: @{Main-Class}${line.separator}"/>
+
+      <jar
+        destfile="@{destfiledir}/main.jar"
+        manifest="${tmp.manifest.file}"
+        >
+        <jar-fileset-elements/>
+      </jar>
+
+      </sequential>
+  </macrodef>
+
+  <macrodef name="build-onejar-application">
+    <attribute name="destfiledir"/>
+    <attribute name="app-jarname"/>
+    <attribute name="app-libdir"/>
+    <attribute name="app-binlibdir"/>
+    <element   name="extra-fileset-elements" optional="true"/>
+    
+    <!-- jar2 -->
+    <sequential>
+      <property name="boot.dir" value="${onejar.build.dir}/boot"/>
+      <delete dir="${boot.dir}"/>
+      <mkdir dir="${boot.dir}"/>
+
+      <echo>imported.basedir is ${imported.basedir}</echo>
+      <echo>our OneJar is ${one-jar-boot.jar}</echo>
+
+      <unjar src="${one-jar-boot.jar}"
+        dest="${boot.dir}"/>
+
+    <jar
+      destfile="@{destfiledir}/@{app-jarname}"
+      manifest="${onejar.src.resource.dir}/one-jar-boot-manifest.mf"
+      >
+      <zipfileset dir="@{app-libdir}"               prefix="lib"/>
+      <zipfileset dir="@{app-binlibdir}"            prefix="binlib"/>
+      <zipfileset file="@{destfiledir}/main.jar"    prefix="main"/>
+      <fileset    dir="${boot.dir}"                 includes="**"/>
+      <extra-fileset-elements/>
+    </jar>
+  </sequential>
+
+  </macrodef>
+
+
+
+
+  <!-- inputs:    location of 'main.jar'
+                  desired name and location for 'onejar-wrapped.jar'
+   -->
+  <target name="jar1">
+    <jar 
+      destfile="build/main.jar"
+      manifest="src/resource/manifest.mf"
+      >
+      <fileset dir="${build.classes.dir}"
+        includes="**/*.class"/>
+    </jar>
+
+  </target>
+
+  <target name="jar2">
+    <property name="boot.dir" value="build/boot"/>
+    <delete dir="${boot.dir}"/>
+    <mkdir dir="${boot.dir}"/>
+    
+    <unjar src="${one-jar-boot.jar}"
+      dest="${boot.dir}"/>
+
+    <jar 
+      destfile="build/myapp.jar"
+      manifest="src/resource/one-jar-boot-manifest.mf"
+      >
+      <zipfileset dir="lib"
+        prefix="lib"/>
+      <zipfileset file="build/main.jar"
+        prefix="main"/>
+      <fileset dir="${boot.dir}"
+        includes="**"/>
+      <fileset dir="src/resource"
+        includes="log4j.properties"/>
+    </jar>
+    
+  </target>
+
+  <target name="main" depends="compile, jar1, jar2"/>
+
+</project> 

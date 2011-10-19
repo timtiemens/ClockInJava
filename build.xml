@@ -1,0 +1,23 @@
+<project name="zz_test"
+	     default="dist"
+         basedir=".">
+
+
+    <!-- ===================================================================
+            Main target: bundle this proejct up
+         =================================================================== -->
+    <target name="dist">
+       <jar destfile="build/zz_build.project.jar">
+         <zipfileset dir="."
+               includes=".classpath .project .settings/** src/** build.xml"/>
+       </jar>
+    </target>
+
+    <!-- ===================================================================
+            Deletes any built files
+         =================================================================== -->
+    <target name="clean">
+
+    </target>
+
+</project>

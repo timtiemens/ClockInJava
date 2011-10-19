@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+     By default, this build.xml creates the file   'application.jar'
+        which can then be run as:
+      $ java -jar application.jar arg1 arg2 arg3
+
+     To customize this directory, look at these files/directories:
+     a: file build.properties - change stuff in this file first
+     b: file build.xml        - change target "libsetup" (see below)
+     c: directory 'lib'       - see target "libsetup", below
+     d: directory src/java    - put your .java files here, create directories
+                                  for packages here, etc.
+  -->
+<project name="clock" default="main" basedir="../..">
+  <dirname property="our.basedir" file="${ant.file.clock}"/>
+  <property file="${our.basedir}/build-clock.properties"/>
+
+  <import file="${onejar.support.dir}/build-onejar.xml"/>
+
+  <!-- NOTE: if you add to this, see the 'pathconvert', below -->
+  <path id="lib.components">
+    <fileset dir="${app.lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <!-- NOTE: if you add to this, you must make sure to put them into
+             main-fileset-elements, below, as well.
+    -->
+  <path id="compile.base.path">
+    <pathelement location="${build.classes.dir}"/>
+    <path refid="lib.components"/>
+  </path>
+  
+  <!--
+       put any 3rd-party .jar files into the directory 'lib'
+
+       these jars are used both by the compile step and 
+       are copied into the application.jar.
+    -->
+  <target name="libsetup">
+    <mkdir dir="${app.lib.dir}" />
+<!--
+    <copy failonerror="true"
+      file="${log4j.jar}"
+      todir="${app.lib.dir}"/>
+    <copy failonerror="true"
+      file="${jdom.jar}"
+      todir="${app.lib.dir}"/>
+ -->
+  </target>
+
+
+  <target name="compile" depends="libsetup">
+    <mkdir dir="${build.classes.dir}"/>
+    <javac destdir="${build.classes.dir}"         
+           debug="yes"
+           deprecation="on">
+      <src path="${java.src.dir}"/>
+      <include name="tst/Clock.java" />
+      
+      <classpath refid="compile.base.path"/>
+    </javac>
+  </target>
+
+  <target name="mainapp">
+
+    <property name="Main-Class"  value="${main.class}"/>
+
+    <property name="app-jarname" value="${application.jar}"/>
+
+    <mkdir dir="${app.lib.dir}"/>
+    <mkdir dir="${app.binlib.dir}"/>
+
+    <!-- automatically construct our 'Class-Path:' value from the pathref -->
+    <pathconvert property="C-P-value" pathsep=" " refid="lib.components">
+      <map from="${basedir}/" to=""/>
+    </pathconvert>
+    <!-- C-P-value is 'lib/log4j.jar lib/jdom.jar' -->
+
+
+    <build-onejar
+      destfiledir="${build.dir}"
+      Main-Class="${Main-Class}"
+      Class-Path="${C-P-value}"
+      app-jarname="${app-jarname}"
+      app-libdir="${app.lib.dir}"
+      app-binlibdir="${app.binlib.dir}"
+      >
+
+      <!-- these are the pieces that go into 'main.jar' -->
+      <main-fileset-elements>
+        <fileset dir="${build.classes.dir}"
+          includes="**/*.class"/>
+      </main-fileset-elements>
+
+      <!-- these are the extra pieces that go into '${app-jarname}' 
+           at the top of the jar -->
+      <app-extra-fileset-elements>
+        <fileset dir="${resource.src.dir}"
+          includes="log4j.properties"/>
+      </app-extra-fileset-elements>
+
+    </build-onejar>
+
+<!-- 
+      Uncomment this block if you want your application.jar copied 
+            to the top directory.
+
+    <copy failonerror="true"
+      file="${build.dir}/${application.jar}"
+      todir="."/>
+-->
+
+  </target>
+
+  <target name="main" depends="compile, mainapp" />
+
+
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+    <delete file="${application.jar}"/>
+  </target>
+
+
+</project>
+  
