@@ -27,6 +27,8 @@ import java.awt.Panel;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 /**
  * 
  * @author Tim Tiemens
@@ -162,16 +164,27 @@ public class DisplayPanel
 	public void setInfo(String info) 
 	{
 		current_info = info;
-		repaint();
+		runRepaintLater();
+	}
+	private void runRepaintLater()
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+		    public void run()
+		    {
+		        repaint();
+		    }
+		});
 	}
 	
 	/**
 	 * Set the display background
 	 * @param image background image
 	 */
-	public void setBackgroundImage(Image image) {
+	public void setBackgroundImage(Image image) 
+	{
 		img_bg = image; //background image
-		repaint();
+        runRepaintLater();
 	}
 	
 	/**
@@ -181,7 +194,7 @@ public class DisplayPanel
 	public void setNumDigits(int numdig) 
 	{
 		num_digits = numdig;
-		repaint();
+		runRepaintLater();
 	}
 	
 	/**
@@ -191,7 +204,7 @@ public class DisplayPanel
 	public void setDigitsImages(ConvertCharacterToImage c2image) 
 	{
 		dig = c2image;
-		repaint();
+        runRepaintLater();
 	}
 	
 	/**

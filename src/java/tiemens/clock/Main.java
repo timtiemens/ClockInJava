@@ -21,6 +21,7 @@
 package tiemens.clock;
 
 import tiemens.clock.simple.MainSimpleClock;
+import tiemens.clock.simpleimage.SimpleImageClockMain;
 
 /**
  * @author ttiemens
@@ -38,8 +39,21 @@ public class Main
 
 	public static void main(String[] args)
 	{
-		// Enhancement: later, check arguments, call different "main"s
-		MainSimpleClock.main(args);
+	    if ((args.length == 0) ||
+	         "MainSimpleClock".equalsIgnoreCase(args[0]) ||
+	         "simple".equalsIgnoreCase(args[0]))
+	    {
+	        MainSimpleClock.main(args);
+	    }
+	    else if ("SimpleImageClock".equals(args[0]) ||
+	             "image".equalsIgnoreCase(args[0]))
+	    {
+	        SimpleImageClockMain.main(args);
+	    }
+	    else
+	    {
+	        MainSimpleClock.main(args);
+	    }
 	}
 	
     // ==================================================
