@@ -68,9 +68,7 @@ public class MainSimpleClock
 	// instance data
 	// ==================================================
 
-	protected DecimalFormat tf;
-	protected DecimalFormat tflz;
-
+	protected SimpleTimeFormatGenerator timeGenerator;
 	protected volatile boolean done = false;
 
 	// ==================================================
@@ -83,6 +81,7 @@ public class MainSimpleClock
 
 	public MainSimpleClock() 
 	{
+		timeGenerator = new SimpleTimeFormatGenerator();
 		new Thread(new Runnable() 
 		{
 			public void run() 
@@ -102,8 +101,7 @@ public class MainSimpleClock
 			}
 		}).start();
 
-		tf = new DecimalFormat("#0");
-		tflz = new DecimalFormat("00");
+
 	}
 
 
@@ -122,20 +120,8 @@ public class MainSimpleClock
 	@Override
 	public void paint(Graphics g) 
 	{
-		Calendar myCal = Calendar.getInstance();
-		int hour = myCal.get(Calendar.HOUR);
-		if (hour == 0) 
-		{
-			hour = 12;
-		}
+		String  s = timeGenerator.getTimeString(new java.util.Date().getTime());
 		
-		StringBuffer sb = new StringBuffer();
-		sb.append(tf.format(hour));
-		sb.append(':');
-		sb.append(tflz.format(myCal.get(Calendar.MINUTE)));
-		sb.append(':');
-		sb.append(tflz.format(myCal.get(Calendar.SECOND)));
-		String s = sb.toString();
 		FontMetrics fm = getFontMetrics(getFont());
 		int x = (getSize().width - fm.stringWidth(s)) / 2;
 		// System.out.println("Size is " + getSize());
@@ -170,4 +156,39 @@ public class MainSimpleClock
 	// non public methods
 	// ==================================================
 
+	public static class SimpleTimeFormatGenerator
+	{
+		protected DecimalFormat tf;
+		protected DecimalFormat tflz;
+		
+		public SimpleTimeFormatGenerator()
+		{
+			tf = new DecimalFormat("#0");
+			tflz = new DecimalFormat("00");
+		}
+		
+		public String getTimeString(final long millis)
+		{
+			Calendar myCal = Calendar.getInstance();
+			myCal.setTimeInMillis(millis);
+			int hour = myCal.get(Calendar.HOUR);
+			if (hour == 0) 
+			{
+				hour = 12;
+			}
+			
+			StringBuffer sb = new StringBuffer();
+			sb.append(tf.format(hour));
+			sb.append(':');
+			sb.append(tflz.format(myCal.get(Calendar.MINUTE)));
+			sb.append(':');
+			sb.append(tflz.format(myCal.get(Calendar.SECOND)));
+			return sb.toString();
+		}
+
+		public String getBiggestString() 
+		{
+			return "00:00:00";
+		}
+	} // class
 }

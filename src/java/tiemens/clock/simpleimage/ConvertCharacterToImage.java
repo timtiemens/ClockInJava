@@ -20,6 +20,7 @@
  */
 package tiemens.clock.simpleimage;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,12 +29,21 @@ import java.util.Map;
 
 public class ConvertCharacterToImage
 {
-    private Map<Character, Image> char2image;
+	private Map<Character, Image> char2image;
+    private final Color preferBackgroundColor;
     
-    public ConvertCharacterToImage(Map<Character, Image> in)
+    public ConvertCharacterToImage(Map<Character, Image> in,
+    		                       Color inPreferBackgroundColor)
     {
         char2image = new HashMap<Character, Image>();
         char2image.putAll(in);
+        
+        preferBackgroundColor = inPreferBackgroundColor;
+    }
+    
+    public Color getPreferBackgroundColor()
+    {
+    	return preferBackgroundColor;
     }
     
     public Image convert(final Character c)

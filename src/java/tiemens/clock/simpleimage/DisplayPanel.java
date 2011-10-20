@@ -36,130 +36,131 @@ public class DisplayPanel
 {
     private static Logger logger = Logger.getLogger("DisplayPanel");
     
-	/**
-	 * background image, can be null.
-	 */
-	private Image img_bg = null;
-	
-	/**
-	 * digit images, can not be null.
-	 */
-	private ConvertCharacterToImage dig = null;
-	
-	/**
-	 * images to display in order.
-	 */
-	private Image[] display_images;
-	
-	/**
-	 * current string to display
-	 */
-	private String current_info;
-	
-	/**
-	 * number of display digits
-	 */
-	private int num_digits;
-	
-	/**
-	 * total display width
-	 */
-	private int w;
-	
-	/**
-	 * total display height
-	 */
-	private int h;
-	
-	/**
-	 * digits width
-	 */
-	private int dw;
-	
-	/**
-	 * digits height
-	 */
-	private int dh;
-	
-	/**
-	 * digits X start coordinate
-	 */
-	private int dx;
-	
-	/**
-	 * digits Y start coordinate
-	 */
-	private int dy;
-	
-	/**
-	 * background image width
-	 */
-	private int bw;
-	
-	/**
-	 * background image height
-	 */
-	private int bh;
-	
-	/**
-	 * background image X start coordinate
-	 */
-	private int bx;
-	
-	/**
-	 * background image Y start coordinate
-	 */
-	private int by;
-	
-	/**
-	 * Build a void panel.
-	 */
-	public DisplayPanel(ConvertCharacterToImage dimg) 
-	{
-	    this(1, "", null, dimg, 1, 1);
-	}
-	
-	/**
-	 * Build a display panel.
-	 * @param numdig number of display digits
-	 * @param info string to display
-	 * @param backgroundimage background image
-	 * @param dimg array of digits images
-	 * @param aw applet width
-	 * @param ah applet height
-	 */
-	public DisplayPanel(int numdig, 
-	                    String info, 
-	                    Image backgroundimage,
-	                    ConvertCharacterToImage dimg,
-	                    int aw, 
-	                    int ah) 
-	{
-		num_digits = numdig;
-		current_info = info;
-		img_bg = backgroundimage; //background image
-		dig = dimg; 
-		w = aw;
-		h = ah;
-		
-		setLayout(null);
-		resize();
-	}
-	
-	
+    /**
+     * background image, can be null.
+     */
+    private Image img_bg = null;
+    
+    /**
+     * digit images, can not be null.
+     */
+    private ConvertCharacterToImage dig = null;
+    
+    /**
+     * images to display in order.
+     */
+    private Image[] display_images;
+    
+    /**
+     * current string to display
+     */
+    private String current_info;
+    
+    /**
+     * number of display digits
+     */
+    private int num_digits;
+    
+    /**
+     * total display width
+     */
+    private int w;
+    
+    /**
+     * total display height
+     */
+    private int h;
+    
+    /**
+     * digits width
+     */
+    private int dw;
+    
+    /**
+     * digits height
+     */
+    private int dh;
+    
+    /**
+     * digits X start coordinate
+     */
+    private int dx;
+    
+    /**
+     * digits Y start coordinate
+     */
+    private int dy;
+    
+    /**
+     * background image width
+     */
+    private int bw;
+    
+    /**
+     * background image height
+     */
+    private int bh;
+    
+    /**
+     * background image X start coordinate
+     */
+    private int bx;
+    
+    /**
+     * background image Y start coordinate
+     */
+    private int by;
+    
+    /**
+     * Build a void panel.
+     */
+    public DisplayPanel(ConvertCharacterToImage dimg) 
+    {
+        this(1, "", null, dimg, 1, 1);
+    }
+    
+    /**
+     * Build a display panel.
+     * @param numdig number of display digits
+     * @param info string to display
+     * @param backgroundimage background image
+     * @param dimg array of digits images
+     * @param aw applet width
+     * @param ah applet height
+     */
+    public DisplayPanel(int numdig, 
+                        String info, 
+                        Image backgroundimage,
+                        ConvertCharacterToImage dimg,
+                        int aw, 
+                        int ah) 
+    {
+        num_digits = numdig;
+        current_info = info;
+        img_bg = backgroundimage; //background image
+        dig = dimg; 
+        w = aw;
+        h = ah;
+        
+        setLayout(null);
+        resize();
+    }
+    
 	/**
 	 * overwrite update method for double buffering
 	 * @param g graphics
 	 */
-	public void update(Graphics g) {
-		paint(g);
+	public void update(Graphics g) 
+	{
+	    paint(g);
 	}
 	
 	/**
 	 * Set string to display
 	 * @param info string to display
 	 */
-	public void setInfo(String info) {
+	public void setInfo(String info) 
+	{
 		current_info = info;
 		repaint();
 	}
@@ -246,7 +247,7 @@ public class DisplayPanel
 			}
 			
 			display_images = current_info_images.toArray(new Image[0]);
-			logger.info("number of images = " + display_images.length);
+			logger.fine("number of images = " + display_images.length);
 	         //display_images = new Image[current_info_images.size()];
 		}
 		
@@ -260,7 +261,7 @@ public class DisplayPanel
 		bx = (int) ( (w - bw) / 2);
 		by = (int) ( (h - bh) / 2);
 		
-		logger.info("DisplayPanel w=" + w + " h=" + h);
+		logger.fine("DisplayPanel w=" + w + " h=" + h);
 		setSize(w, h);
 	}
 	

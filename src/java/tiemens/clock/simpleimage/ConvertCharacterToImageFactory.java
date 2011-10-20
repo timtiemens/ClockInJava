@@ -20,6 +20,7 @@
  */
 package tiemens.clock.simpleimage;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -36,30 +37,38 @@ import javax.imageio.ImageIO;
 public class ConvertCharacterToImageFactory
 {
     private static Logger logger = Logger.getLogger("ConvertCharacterToImageFactory");
+    private static Color forBlack = Color.LIGHT_GRAY;
+    private static Color forOther = Color.DARK_GRAY;
     
     public static enum Types
     {
-        hand_26x31(null),
-        lcd_14x23("gray"),
-        led_12x21__black("black"),
-        led_12x21__blue("blue"),
-        led_12x21__green("green"),
-        led_12x21__red("red"),
-        led_12x21__white("white"),
-        led_12x21__yello("yellow"),
-        led_9x15__black("black"),
-        led_9x15__blue("blue"),
-        led_9x15__green("green"),
-        led_9x15__red("red"),
-        led_9x15__white("white"),
-        led_9x15__yellow("yellow"),
-        small_6x9__black("black"),
-        small_6x9__white("white");
+        hand_26x31(null,            null),
+        lcd_14x23("gray",           null),
+        led_12x21__black("black",   forBlack),
+        led_12x21__blue("blue",     forOther),
+        led_12x21__green("green",   forOther),
+        led_12x21__red("red",       forOther),
+        led_12x21__white("white",   forOther),
+        led_12x21__yellow("yellow", forOther),
+        led_9x15__black("black",    forBlack),
+        led_9x15__blue("blue",      forOther),
+        led_9x15__green("green",    forOther),
+        led_9x15__red("red",        forOther),
+        led_9x15__white("white",    forOther),
+        led_9x15__yellow("yellow",  forOther),
+        small_6x9__black("black",   forBlack),
+        small_6x9__white("white",   forOther);
         
         private final String extraPath;
+        private final Color prefBackgroundColor;
         private Types(String inextra)
         {
+        	this(inextra, null);
+        }
+        private Types(String inextra, Color pref)
+        {
             extraPath = inextra;
+        	prefBackgroundColor = pref;
         }
         
         public String getPath(final String prefix)
@@ -77,7 +86,10 @@ public class ConvertCharacterToImageFactory
         {
             return extraPath;
         }
-       
+        public Color getPreferBackgroundColor()
+        {
+        	return prefBackgroundColor;
+        }
     }
     
     public static enum ImgSlot
@@ -156,7 +168,9 @@ public class ConvertCharacterToImageFactory
             map.put(img.getCharacter(), image);
         }
         
-        ConvertCharacterToImage ret = new ConvertCharacterToImage(map);
+        ConvertCharacterToImage ret = 
+        		new ConvertCharacterToImage(map,
+        		                            intype.getPreferBackgroundColor());
         return ret;
     }
 
@@ -198,6 +212,4 @@ public class ConvertCharacterToImageFactory
         }
         return all;
     }
-
-
 }
