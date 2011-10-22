@@ -11,7 +11,7 @@ tokens {
     DIV = '/' ;
 }
 
-@header {  
+@parser::header {  
  package tiemens.util.resources.antlr; 
 }
 @lexer::header {

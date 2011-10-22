@@ -58,7 +58,6 @@
            debug="yes"
            deprecation="on">
       <src path="${java.src.dir}"/>
-      <include name="tst/Clock.java" />
       
       <classpath refid="compile.base.path"/>
     </javac>
