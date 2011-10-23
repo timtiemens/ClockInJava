@@ -1,5 +1,10 @@
 package tiemens.util.resources.antlr;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.antlr.runtime.*;
 
 public class ExprMain
@@ -12,6 +17,8 @@ public class ExprMain
         ExprParser parser = new ExprParser(tokens);
         parser.prog();
         
+        List<Integer> list = new ArrayList<Integer>();
+        //System.out.println(Arrays.)
         
         
 //        SimpleCalcLexer lex = new SimpleCalcLexer(new ANTLRFileStream(args[0]));

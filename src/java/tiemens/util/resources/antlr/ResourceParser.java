@@ -1,4 +1,4 @@
-// $ANTLR 3.4 Resource.g 2011-10-21 21:03:10
+// $ANTLR 3.4 Resource.g 2011-10-22 22:20:09
   
  package tiemens.util.resources.antlr;
  import java.util.HashMap; 
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 @SuppressWarnings({"all", "warnings", "unchecked"})
 public class ResourceParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "CLASSNAME", "COMMAND", "ID", "INT", "NEWLINE", "WS", "'\"'", "'('", "')'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "CLASSNAME", "COMMAND", "IDENTIFIER", "NEWLINE", "Number", "SPACE", "'\"'", "'('", "')'"
     };
 
     public static final int EOF=-1;
@@ -23,10 +23,10 @@ public class ResourceParser extends Parser {
     public static final int T__12=12;
     public static final int CLASSNAME=4;
     public static final int COMMAND=5;
-    public static final int ID=6;
-    public static final int INT=7;
-    public static final int NEWLINE=8;
-    public static final int WS=9;
+    public static final int IDENTIFIER=6;
+    public static final int NEWLINE=7;
+    public static final int Number=8;
+    public static final int SPACE=9;
 
     // delegates
     public Parser[] getDelegates() {
@@ -53,13 +53,17 @@ public class ResourceParser extends Parser {
         public static void main(String[] args) throws Exception {
             ANTLRInputStream input = new ANTLRInputStream(System.in);
             // input = new ANTLRFileStream(args[0]));
-            ResourceLexer lex = new ResourceLexer(input);
-            CommonTokenStream tokens = new CommonTokenStream(lex);
+            ResourceLexer lexer = new ResourceLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
 
             ResourceParser parser = new ResourceParser(tokens);
 
             try {
                 parser.prog();
+                if (lexer.getExceptions().size() > 0)
+                {
+                   System.out.println("There were exceptions.  Check output.");
+                }
             } catch (RecognitionException e)  {
                 e.printStackTrace();
             }
@@ -68,29 +72,28 @@ public class ResourceParser extends Parser {
 
 
     // $ANTLR start "prog"
-    // Resource.g:37:1: prog : ( instance )+ EOF ;
+    // Resource.g:57:1: prog : ( instance )* ;
     public final void prog() throws RecognitionException {
         try {
-            // Resource.g:37:5: ( ( instance )+ EOF )
-            // Resource.g:37:9: ( instance )+ EOF
+            // Resource.g:57:5: ( ( instance )* )
+            // Resource.g:57:9: ( instance )*
             {
-            // Resource.g:37:9: ( instance )+
-            int cnt1=0;
+            // Resource.g:57:9: ( instance )*
             loop1:
             do {
                 int alt1=2;
                 int LA1_0 = input.LA(1);
 
-                if ( (LA1_0==NEWLINE||LA1_0==11) ) {
+                if ( (LA1_0==11) ) {
                     alt1=1;
                 }
 
 
                 switch (alt1) {
             	case 1 :
-            	    // Resource.g:37:9: instance
+            	    // Resource.g:57:9: instance
             	    {
-            	    pushFollow(FOLLOW_instance_in_prog38);
+            	    pushFollow(FOLLOW_instance_in_prog47);
             	    instance();
 
             	    state._fsp--;
@@ -100,16 +103,10 @@ public class ResourceParser extends Parser {
             	    break;
 
             	default :
-            	    if ( cnt1 >= 1 ) break loop1;
-                        EarlyExitException eee =
-                            new EarlyExitException(1, input);
-                        throw eee;
+            	    break loop1;
                 }
-                cnt1++;
             } while (true);
 
-
-            match(input,EOF,FOLLOW_EOF_in_prog41); 
 
             }
 
@@ -129,64 +126,49 @@ public class ResourceParser extends Parser {
 
 
     // $ANTLR start "instance"
-    // Resource.g:39:1: instance : ( '(' c= command n= classname ')' | NEWLINE );
+    // Resource.g:59:1: instance : '(' c= command name= classname l= line ')' ;
     public final void instance() throws RecognitionException {
         String c =null;
 
-        String n =null;
+        String name =null;
+
+        List<Integer> l =null;
 
 
         try {
-            // Resource.g:40:5: ( '(' c= command n= classname ')' | NEWLINE )
-            int alt2=2;
-            int LA2_0 = input.LA(1);
+            // Resource.g:60:5: ( '(' c= command name= classname l= line ')' )
+            // Resource.g:60:9: '(' c= command name= classname l= line ')'
+            {
+            match(input,11,FOLLOW_11_in_instance79); 
 
-            if ( (LA2_0==11) ) {
-                alt2=1;
-            }
-            else if ( (LA2_0==NEWLINE) ) {
-                alt2=2;
-            }
-            else {
-                NoViableAltException nvae =
-                    new NoViableAltException("", 2, 0, input);
+            pushFollow(FOLLOW_command_in_instance83);
+            c=command();
 
-                throw nvae;
-
-            }
-            switch (alt2) {
-                case 1 :
-                    // Resource.g:40:9: '(' c= command n= classname ')'
-                    {
-                    match(input,11,FOLLOW_11_in_instance71); 
-
-                    pushFollow(FOLLOW_command_in_instance75);
-                    c=command();
-
-                    state._fsp--;
+            state._fsp--;
 
 
-                    pushFollow(FOLLOW_classname_in_instance79);
-                    n=classname();
+            pushFollow(FOLLOW_classname_in_instance87);
+            name=classname();
 
-                    state._fsp--;
+            state._fsp--;
 
 
-                    match(input,12,FOLLOW_12_in_instance81); 
+            pushFollow(FOLLOW_line_in_instance92);
+            l=line();
 
-                    System.out.println("command-is " + c + " classname=[" + n + "]");
+            state._fsp--;
 
-                    }
-                    break;
-                case 2 :
-                    // Resource.g:41:9: NEWLINE
-                    {
-                    match(input,NEWLINE,FOLLOW_NEWLINE_in_instance97); 
 
-                    }
-                    break;
+            match(input,12,FOLLOW_12_in_instance94); 
+
+            System.out.println("codmmand-is " + c + 
+                                                         " classname=[" + name + "]");
+                                      System.out.println("list.size=" + l.size());
+                                      System.out.println(l); 
+                                     
 
             }
+
         }
         catch (RecognitionException re) {
             reportError(re);
@@ -203,7 +185,7 @@ public class ResourceParser extends Parser {
 
 
     // $ANTLR start "command"
-    // Resource.g:44:1: command returns [String value] : c= COMMAND ;
+    // Resource.g:68:1: command returns [String value] : c= COMMAND ;
     public final String command() throws RecognitionException {
         String value = null;
 
@@ -211,10 +193,10 @@ public class ResourceParser extends Parser {
         Token c=null;
 
         try {
-            // Resource.g:45:5: (c= COMMAND )
-            // Resource.g:45:8: c= COMMAND
+            // Resource.g:69:5: (c= COMMAND )
+            // Resource.g:69:8: c= COMMAND
             {
-            c=(Token)match(input,COMMAND,FOLLOW_COMMAND_in_command121); 
+            c=(Token)match(input,COMMAND,FOLLOW_COMMAND_in_command149); 
 
             value = c.getText();
 
@@ -236,7 +218,7 @@ public class ResourceParser extends Parser {
 
 
     // $ANTLR start "classname"
-    // Resource.g:48:2: classname returns [String value] : '\"' c= CLASSNAME '\"' ;
+    // Resource.g:72:2: classname returns [String value] : '\"' c= CLASSNAME '\"' ;
     public final String classname() throws RecognitionException {
         String value = null;
 
@@ -244,14 +226,14 @@ public class ResourceParser extends Parser {
         Token c=null;
 
         try {
-            // Resource.g:49:5: ( '\"' c= CLASSNAME '\"' )
-            // Resource.g:49:7: '\"' c= CLASSNAME '\"'
+            // Resource.g:73:5: ( '\"' c= CLASSNAME '\"' )
+            // Resource.g:73:7: '\"' c= CLASSNAME '\"'
             {
-            match(input,10,FOLLOW_10_in_classname147); 
+            match(input,10,FOLLOW_10_in_classname175); 
 
-            c=(Token)match(input,CLASSNAME,FOLLOW_CLASSNAME_in_classname151); 
+            c=(Token)match(input,CLASSNAME,FOLLOW_CLASSNAME_in_classname179); 
 
-            match(input,10,FOLLOW_10_in_classname153); 
+            match(input,10,FOLLOW_10_in_classname181); 
 
             value = c.getText();
 
@@ -270,21 +252,108 @@ public class ResourceParser extends Parser {
     }
     // $ANTLR end "classname"
 
+
+
+    // $ANTLR start "argslist"
+    // Resource.g:76:2: argslist returns [Object value] :;
+    public final Object argslist() throws RecognitionException {
+        Object value = null;
+
+
+        try {
+            // Resource.g:77:5: ()
+            // Resource.g:78:5: 
+            {
+            }
+
+        }
+        finally {
+        	// do for sure before leaving
+        }
+        return value;
+    }
+    // $ANTLR end "argslist"
+
+
+
+    // $ANTLR start "line"
+    // Resource.g:86:1: line returns [List<Integer> row] : (a= Number )+ ;
+    public final List<Integer> line() throws RecognitionException {
+        List<Integer> row = null;
+
+
+        Token a=null;
+
+
+          row = new ArrayList<Integer>();
+
+        try {
+            // Resource.g:90:3: ( (a= Number )+ )
+            // Resource.g:90:6: (a= Number )+
+            {
+            // Resource.g:90:6: (a= Number )+
+            int cnt2=0;
+            loop2:
+            do {
+                int alt2=2;
+                int LA2_0 = input.LA(1);
+
+                if ( (LA2_0==Number) ) {
+                    alt2=1;
+                }
+
+
+                switch (alt2) {
+            	case 1 :
+            	    // Resource.g:90:8: a= Number
+            	    {
+            	    a=(Token)match(input,Number,FOLLOW_Number_in_line271); 
+
+            	    row.add(Integer.parseInt((a!=null?a.getText():null)));
+
+            	    }
+            	    break;
+
+            	default :
+            	    if ( cnt2 >= 1 ) break loop2;
+                        EarlyExitException eee =
+                            new EarlyExitException(2, input);
+                        throw eee;
+                }
+                cnt2++;
+            } while (true);
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+
+        finally {
+        	// do for sure before leaving
+        }
+        return row;
+    }
+    // $ANTLR end "line"
+
     // Delegated rules
 
 
  
 
-    public static final BitSet FOLLOW_instance_in_prog38 = new BitSet(new long[]{0x0000000000000900L});
-    public static final BitSet FOLLOW_EOF_in_prog41 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_11_in_instance71 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_command_in_instance75 = new BitSet(new long[]{0x0000000000000400L});
-    public static final BitSet FOLLOW_classname_in_instance79 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_12_in_instance81 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NEWLINE_in_instance97 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_COMMAND_in_command121 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_10_in_classname147 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_CLASSNAME_in_classname151 = new BitSet(new long[]{0x0000000000000400L});
-    public static final BitSet FOLLOW_10_in_classname153 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_instance_in_prog47 = new BitSet(new long[]{0x0000000000000802L});
+    public static final BitSet FOLLOW_11_in_instance79 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_command_in_instance83 = new BitSet(new long[]{0x0000000000000400L});
+    public static final BitSet FOLLOW_classname_in_instance87 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_line_in_instance92 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_12_in_instance94 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_COMMAND_in_command149 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_10_in_classname175 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_CLASSNAME_in_classname179 = new BitSet(new long[]{0x0000000000000400L});
+    public static final BitSet FOLLOW_10_in_classname181 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Number_in_line271 = new BitSet(new long[]{0x0000000000000102L});
 
 }

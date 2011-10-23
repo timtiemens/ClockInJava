@@ -1,4 +1,4 @@
-// $ANTLR 3.4 Resource.g 2011-10-21 21:03:10
+// $ANTLR 3.4 Resource.g 2011-10-22 22:20:10
 
  package tiemens.util.resources.antlr; 
 
@@ -16,10 +16,25 @@ public class ResourceLexer extends Lexer {
     public static final int T__12=12;
     public static final int CLASSNAME=4;
     public static final int COMMAND=5;
-    public static final int ID=6;
-    public static final int INT=7;
-    public static final int NEWLINE=8;
-    public static final int WS=9;
+    public static final int IDENTIFIER=6;
+    public static final int NEWLINE=7;
+    public static final int Number=8;
+    public static final int SPACE=9;
+
+        List<RecognitionException> exceptions = new ArrayList<RecognitionException>();
+
+        public List<RecognitionException> getExceptions() 
+        {
+            return exceptions;
+        }
+
+        @Override
+        public void reportError(RecognitionException e) 
+        {
+            super.reportError(e);
+            exceptions.add(e);
+        }
+
 
     // delegates
     // delegators
@@ -41,8 +56,8 @@ public class ResourceLexer extends Lexer {
         try {
             int _type = T__10;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Resource.g:6:7: ( '\"' )
-            // Resource.g:6:9: '\"'
+            // Resource.g:21:7: ( '\"' )
+            // Resource.g:21:9: '\"'
             {
             match('\"'); 
 
@@ -62,8 +77,8 @@ public class ResourceLexer extends Lexer {
         try {
             int _type = T__11;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Resource.g:7:7: ( '(' )
-            // Resource.g:7:9: '('
+            // Resource.g:22:7: ( '(' )
+            // Resource.g:22:9: '('
             {
             match('('); 
 
@@ -83,8 +98,8 @@ public class ResourceLexer extends Lexer {
         try {
             int _type = T__12;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Resource.g:8:7: ( ')' )
-            // Resource.g:8:9: ')'
+            // Resource.g:23:7: ( ')' )
+            // Resource.g:23:9: ')'
             {
             match(')'); 
 
@@ -99,67 +114,22 @@ public class ResourceLexer extends Lexer {
     }
     // $ANTLR end "T__12"
 
-    // $ANTLR start "COMMAND"
-    public final void mCOMMAND() throws RecognitionException {
-        String value = null;
-
-
+    // $ANTLR start "Number"
+    public final void mNumber() throws RecognitionException {
         try {
-            int _type = COMMAND;
+            int _type = Number;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            CommonToken c=null;
-
-            // Resource.g:53:5: (c= 'new' )
-            // Resource.g:53:8: c= 'new'
+            // Resource.g:83:3: ( ( '0' .. '9' )+ )
+            // Resource.g:83:6: ( '0' .. '9' )+
             {
-            int cStart = getCharIndex();
-            match("new"); 
-            int cStartLine54 = getLine();
-            int cStartCharPos54 = getCharPositionInLine();
-            c = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, cStart, getCharIndex()-1);
-            c.setLine(cStartLine54);
-            c.setCharPositionInLine(cStartCharPos54);
-
-
-            value = c.getText();
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "COMMAND"
-
-    // $ANTLR start "CLASSNAME"
-    public final void mCLASSNAME() throws RecognitionException {
-        try {
-            int _type = CLASSNAME;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Resource.g:57:12: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '.' | '0' .. '9' )+ )
-            // Resource.g:57:16: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '.' | '0' .. '9' )+
-            {
-            if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
-                input.consume();
-            }
-            else {
-                MismatchedSetException mse = new MismatchedSetException(null,input);
-                recover(mse);
-                throw mse;
-            }
-
-
-            // Resource.g:57:36: ( 'a' .. 'z' | 'A' .. 'Z' | '.' | '0' .. '9' )+
+            // Resource.g:83:6: ( '0' .. '9' )+
             int cnt1=0;
             loop1:
             do {
                 int alt1=2;
                 int LA1_0 = input.LA(1);
 
-                if ( (LA1_0=='.'||(LA1_0 >= '0' && LA1_0 <= '9')||(LA1_0 >= 'A' && LA1_0 <= 'Z')||(LA1_0 >= 'a' && LA1_0 <= 'z')) ) {
+                if ( ((LA1_0 >= '0' && LA1_0 <= '9')) ) {
                     alt1=1;
                 }
 
@@ -168,7 +138,7 @@ public class ResourceLexer extends Lexer {
             	case 1 :
             	    // Resource.g:
             	    {
-            	    if ( input.LA(1)=='.'||(input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
+            	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
             	        input.consume();
             	    }
             	    else {
@@ -200,54 +170,31 @@ public class ResourceLexer extends Lexer {
         	// do for sure before leaving
         }
     }
-    // $ANTLR end "CLASSNAME"
+    // $ANTLR end "Number"
 
-    // $ANTLR start "ID"
-    public final void mID() throws RecognitionException {
+    // $ANTLR start "COMMAND"
+    public final void mCOMMAND() throws RecognitionException {
+        String value = null;
+
+
         try {
-            int _type = ID;
+            int _type = COMMAND;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Resource.g:59:12: ( ( 'a' .. 'z' | 'A' .. 'Z' )+ )
-            // Resource.g:59:16: ( 'a' .. 'z' | 'A' .. 'Z' )+
+            CommonToken c=null;
+
+            // Resource.g:96:5: (c= 'new' )
+            // Resource.g:96:8: c= 'new'
             {
-            // Resource.g:59:16: ( 'a' .. 'z' | 'A' .. 'Z' )+
-            int cnt2=0;
-            loop2:
-            do {
-                int alt2=2;
-                int LA2_0 = input.LA(1);
-
-                if ( ((LA2_0 >= 'A' && LA2_0 <= 'Z')||(LA2_0 >= 'a' && LA2_0 <= 'z')) ) {
-                    alt2=1;
-                }
+            int cStart = getCharIndex();
+            match("new"); 
+            int cStartLine77 = getLine();
+            int cStartCharPos77 = getCharPositionInLine();
+            c = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, cStart, getCharIndex()-1);
+            c.setLine(cStartLine77);
+            c.setCharPositionInLine(cStartCharPos77);
 
 
-                switch (alt2) {
-            	case 1 :
-            	    // Resource.g:
-            	    {
-            	    if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
-            	        input.consume();
-            	    }
-            	    else {
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;
-            	    }
-
-
-            	    }
-            	    break;
-
-            	default :
-            	    if ( cnt2 >= 1 ) break loop2;
-                        EarlyExitException eee =
-                            new EarlyExitException(2, input);
-                        throw eee;
-                }
-                cnt2++;
-            } while (true);
-
+            value = c.getText();
 
             }
 
@@ -258,54 +205,27 @@ public class ResourceLexer extends Lexer {
         	// do for sure before leaving
         }
     }
-    // $ANTLR end "ID"
+    // $ANTLR end "COMMAND"
 
-    // $ANTLR start "INT"
-    public final void mINT() throws RecognitionException {
+    // $ANTLR start "SPACE"
+    public final void mSPACE() throws RecognitionException {
         try {
-            int _type = INT;
+            int _type = SPACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Resource.g:60:12: ( ( '0' .. '9' )+ )
-            // Resource.g:60:16: ( '0' .. '9' )+
+            // Resource.g:102:3: ( ( ' ' | '\\t' ) )
+            // Resource.g:102:6: ( ' ' | '\\t' )
             {
-            // Resource.g:60:16: ( '0' .. '9' )+
-            int cnt3=0;
-            loop3:
-            do {
-                int alt3=2;
-                int LA3_0 = input.LA(1);
-
-                if ( ((LA3_0 >= '0' && LA3_0 <= '9')) ) {
-                    alt3=1;
-                }
+            if ( input.LA(1)=='\t'||input.LA(1)==' ' ) {
+                input.consume();
+            }
+            else {
+                MismatchedSetException mse = new MismatchedSetException(null,input);
+                recover(mse);
+                throw mse;
+            }
 
 
-                switch (alt3) {
-            	case 1 :
-            	    // Resource.g:
-            	    {
-            	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
-            	        input.consume();
-            	    }
-            	    else {
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;
-            	    }
-
-
-            	    }
-            	    break;
-
-            	default :
-            	    if ( cnt3 >= 1 ) break loop3;
-                        EarlyExitException eee =
-                            new EarlyExitException(3, input);
-                        throw eee;
-                }
-                cnt3++;
-            } while (true);
-
+            _channel = HIDDEN;
 
             }
 
@@ -316,26 +236,66 @@ public class ResourceLexer extends Lexer {
         	// do for sure before leaving
         }
     }
-    // $ANTLR end "INT"
+    // $ANTLR end "SPACE"
 
     // $ANTLR start "NEWLINE"
     public final void mNEWLINE() throws RecognitionException {
         try {
             int _type = NEWLINE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Resource.g:61:12: ( ( '\\r' )? '\\n' )
-            // Resource.g:61:13: ( '\\r' )? '\\n'
-            {
-            // Resource.g:61:13: ( '\\r' )?
-            int alt4=2;
-            int LA4_0 = input.LA(1);
+            // Resource.g:108:3: ( ( '\\r' )? '\\n' | '\\r' )
+            int alt3=2;
+            int LA3_0 = input.LA(1);
 
-            if ( (LA4_0=='\r') ) {
-                alt4=1;
+            if ( (LA3_0=='\r') ) {
+                int LA3_1 = input.LA(2);
+
+                if ( (LA3_1=='\n') ) {
+                    alt3=1;
+                }
+                else {
+                    alt3=2;
+                }
             }
-            switch (alt4) {
+            else if ( (LA3_0=='\n') ) {
+                alt3=1;
+            }
+            else {
+                NoViableAltException nvae =
+                    new NoViableAltException("", 3, 0, input);
+
+                throw nvae;
+
+            }
+            switch (alt3) {
                 case 1 :
-                    // Resource.g:61:13: '\\r'
+                    // Resource.g:108:6: ( '\\r' )? '\\n'
+                    {
+                    // Resource.g:108:6: ( '\\r' )?
+                    int alt2=2;
+                    int LA2_0 = input.LA(1);
+
+                    if ( (LA2_0=='\r') ) {
+                        alt2=1;
+                    }
+                    switch (alt2) {
+                        case 1 :
+                            // Resource.g:108:6: '\\r'
+                            {
+                            match('\r'); 
+
+                            }
+                            break;
+
+                    }
+
+
+                    match('\n'); 
+
+                    }
+                    break;
+                case 2 :
+                    // Resource.g:109:6: '\\r'
                     {
                     match('\r'); 
 
@@ -343,12 +303,6 @@ public class ResourceLexer extends Lexer {
                     break;
 
             }
-
-
-            match('\n'); 
-
-            }
-
             state.type = _type;
             state.channel = _channel;
         }
@@ -358,22 +312,88 @@ public class ResourceLexer extends Lexer {
     }
     // $ANTLR end "NEWLINE"
 
-    // $ANTLR start "WS"
-    public final void mWS() throws RecognitionException {
+    // $ANTLR start "CLASSNAME"
+    public final void mCLASSNAME() throws RecognitionException {
         try {
-            int _type = WS;
+            int _type = CLASSNAME;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Resource.g:62:12: ( ( ' ' | '\\t' )+ )
-            // Resource.g:62:16: ( ' ' | '\\t' )+
+            // Resource.g:113:6: ( IDENTIFIER ( '.' IDENTIFIER )+ )
+            // Resource.g:113:8: IDENTIFIER ( '.' IDENTIFIER )+
             {
-            // Resource.g:62:16: ( ' ' | '\\t' )+
+            mIDENTIFIER(); 
+
+
+            // Resource.g:113:19: ( '.' IDENTIFIER )+
+            int cnt4=0;
+            loop4:
+            do {
+                int alt4=2;
+                int LA4_0 = input.LA(1);
+
+                if ( (LA4_0=='.') ) {
+                    alt4=1;
+                }
+
+
+                switch (alt4) {
+            	case 1 :
+            	    // Resource.g:113:20: '.' IDENTIFIER
+            	    {
+            	    match('.'); 
+
+            	    mIDENTIFIER(); 
+
+
+            	    }
+            	    break;
+
+            	default :
+            	    if ( cnt4 >= 1 ) break loop4;
+                        EarlyExitException eee =
+                            new EarlyExitException(4, input);
+                        throw eee;
+                }
+                cnt4++;
+            } while (true);
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        	// do for sure before leaving
+        }
+    }
+    // $ANTLR end "CLASSNAME"
+
+    // $ANTLR start "IDENTIFIER"
+    public final void mIDENTIFIER() throws RecognitionException {
+        try {
+            int _type = IDENTIFIER;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // Resource.g:117:6: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )+ )
+            // Resource.g:117:8: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )+
+            {
+            if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
+                input.consume();
+            }
+            else {
+                MismatchedSetException mse = new MismatchedSetException(null,input);
+                recover(mse);
+                throw mse;
+            }
+
+
+            // Resource.g:117:28: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' )+
             int cnt5=0;
             loop5:
             do {
                 int alt5=2;
                 int LA5_0 = input.LA(1);
 
-                if ( (LA5_0=='\t'||LA5_0==' ') ) {
+                if ( ((LA5_0 >= '0' && LA5_0 <= '9')||(LA5_0 >= 'A' && LA5_0 <= 'Z')||(LA5_0 >= 'a' && LA5_0 <= 'z')) ) {
                     alt5=1;
                 }
 
@@ -382,7 +402,7 @@ public class ResourceLexer extends Lexer {
             	case 1 :
             	    // Resource.g:
             	    {
-            	    if ( input.LA(1)=='\t'||input.LA(1)==' ' ) {
+            	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
             	        input.consume();
             	    }
             	    else {
@@ -405,8 +425,6 @@ public class ResourceLexer extends Lexer {
             } while (true);
 
 
-            skip();
-
             }
 
             state.type = _type;
@@ -416,10 +434,10 @@ public class ResourceLexer extends Lexer {
         	// do for sure before leaving
         }
     }
-    // $ANTLR end "WS"
+    // $ANTLR end "IDENTIFIER"
 
     public void mTokens() throws RecognitionException {
-        // Resource.g:1:8: ( T__10 | T__11 | T__12 | COMMAND | CLASSNAME | ID | INT | NEWLINE | WS )
+        // Resource.g:1:8: ( T__10 | T__11 | T__12 | Number | COMMAND | SPACE | NEWLINE | CLASSNAME | IDENTIFIER )
         int alt6=9;
         alt6 = dfa6.predict(input);
         switch (alt6) {
@@ -448,49 +466,49 @@ public class ResourceLexer extends Lexer {
                 }
                 break;
             case 4 :
-                // Resource.g:1:28: COMMAND
+                // Resource.g:1:28: Number
+                {
+                mNumber(); 
+
+
+                }
+                break;
+            case 5 :
+                // Resource.g:1:35: COMMAND
                 {
                 mCOMMAND(); 
 
 
                 }
                 break;
-            case 5 :
-                // Resource.g:1:36: CLASSNAME
-                {
-                mCLASSNAME(); 
-
-
-                }
-                break;
             case 6 :
-                // Resource.g:1:46: ID
+                // Resource.g:1:43: SPACE
                 {
-                mID(); 
+                mSPACE(); 
 
 
                 }
                 break;
             case 7 :
-                // Resource.g:1:49: INT
-                {
-                mINT(); 
-
-
-                }
-                break;
-            case 8 :
-                // Resource.g:1:53: NEWLINE
+                // Resource.g:1:49: NEWLINE
                 {
                 mNEWLINE(); 
 
 
                 }
                 break;
-            case 9 :
-                // Resource.g:1:61: WS
+            case 8 :
+                // Resource.g:1:57: CLASSNAME
                 {
-                mWS(); 
+                mCLASSNAME(); 
+
+
+                }
+                break;
+            case 9 :
+                // Resource.g:1:67: IDENTIFIER
+                {
+                mIDENTIFIER(); 
 
 
                 }
@@ -503,34 +521,33 @@ public class ResourceLexer extends Lexer {
 
     protected DFA6 dfa6 = new DFA6(this);
     static final String DFA6_eotS =
-        "\4\uffff\2\13\3\uffff\2\14\2\uffff\1\16\1\uffff";
+        "\11\uffff\2\14\1\16\3\uffff";
     static final String DFA6_eofS =
         "\17\uffff";
     static final String DFA6_minS =
-        "\1\11\3\uffff\2\56\3\uffff\2\101\2\uffff\1\56\1\uffff";
+        "\1\11\4\uffff\1\60\2\uffff\1\60\3\56\3\uffff";
     static final String DFA6_maxS =
-        "\1\172\3\uffff\2\172\3\uffff\2\172\2\uffff\1\172\1\uffff";
+        "\1\172\4\uffff\1\172\2\uffff\4\172\3\uffff";
     static final String DFA6_acceptS =
-        "\1\uffff\1\1\1\2\1\3\2\uffff\1\7\1\10\1\11\2\uffff\1\6\1\5\1\uffff"+
-        "\1\4";
+        "\1\uffff\1\1\1\2\1\3\1\4\1\uffff\1\6\1\7\4\uffff\1\11\1\10\1\5";
     static final String DFA6_specialS =
         "\17\uffff}>";
     static final String[] DFA6_transitionS = {
-            "\1\10\1\7\2\uffff\1\7\22\uffff\1\10\1\uffff\1\1\5\uffff\1\2"+
-            "\1\3\6\uffff\12\6\7\uffff\32\5\6\uffff\15\5\1\4\14\5",
+            "\1\6\1\7\2\uffff\1\7\22\uffff\1\6\1\uffff\1\1\5\uffff\1\2\1"+
+            "\3\6\uffff\12\4\7\uffff\32\10\6\uffff\15\10\1\5\14\10",
             "",
             "",
             "",
-            "\1\14\1\uffff\12\14\7\uffff\32\12\6\uffff\4\12\1\11\25\12",
-            "\1\14\1\uffff\12\14\7\uffff\32\12\6\uffff\32\12",
+            "",
+            "\12\12\7\uffff\32\12\6\uffff\4\12\1\11\25\12",
             "",
             "",
+            "\12\12\7\uffff\32\12\6\uffff\32\12",
+            "\1\15\1\uffff\12\12\7\uffff\32\12\6\uffff\26\12\1\13\3\12",
+            "\1\15\1\uffff\12\12\7\uffff\32\12\6\uffff\32\12",
+            "\1\15\1\uffff\12\12\7\uffff\32\12\6\uffff\32\12",
             "",
-            "\32\12\6\uffff\26\12\1\15\3\12",
-            "\32\12\6\uffff\32\12",
             "",
-            "",
-            "\1\14\1\uffff\12\14\7\uffff\32\12\6\uffff\32\12",
             ""
     };
 
@@ -564,7 +581,7 @@ public class ResourceLexer extends Lexer {
             this.transition = DFA6_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T__10 | T__11 | T__12 | COMMAND | CLASSNAME | ID | INT | NEWLINE | WS );";
+            return "1:1: Tokens : ( T__10 | T__11 | T__12 | Number | COMMAND | SPACE | NEWLINE | CLASSNAME | IDENTIFIER );";
         }
     }
  
