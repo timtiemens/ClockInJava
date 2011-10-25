@@ -20,4 +20,53 @@
 
     </target>
 
+    <!-- ===================================================================
+            Compile everything
+         =================================================================== -->
+    <path id="compile.classpath">
+       <pathelement location="lib/antlr-3.4-complete-no-antlrv2.jar" />
+       <pathelement location="lib/commons-lang3-3.0.1.jar" />
+<!--
+       <fileset dir="./lib">
+          <include name="*.jar"/>
+       </fileset>
+-->
+    </path>
+    <path id="run.classpath">
+       <!-- TODO: change this to refid compile.classpath -->
+<!--
+       <pathelement location="lib/antlr-3.4-complete-no-antlrv2.jar"/>
+-->
+       <path refid="compile.classpath" />
+       <pathelement path="build/classes"/>
+    </path>
+    <target name="compile">
+       <mkdir dir="build/classes" />
+       <javac srcdir="src/java"
+             destdir="build/classes">
+          <classpath refid="compile.classpath" />
+       </javac>
+    </target>
+
+    <target name="generate-Instancer">
+      <java classname="org.antlr.Tool"
+            dir="src/java/tiemens/util/resources/antlr"
+            fork="true"
+            failonerror="true"
+      >
+        <classpath refid="compile.classpath" />
+        <arg value="Instancer.g" />
+      </java>
+    </target>
+    <target name="run-Instancer">
+      <java classname="tiemens.util.resources.antlr.InstancerParser"
+            dir="."
+            fork="true">
+         <classpath refid="run.classpath" />
+         <arg value="src/test/Instancer.input.txt"/>
+      </java>
+    </target>
+
+    <target name="rtrip" depends="generate-Instancer, compile, run-Instancer">
+    </target>
 </project>
