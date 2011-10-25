@@ -1,11 +1,15 @@
 grammar Resource;
 
+/* http://jnb.ociweb.com/jnb/jnbJun2008.html */
 
 @parser::header {  
  package tiemens.util.resources.antlr;
  import java.util.HashMap; 
  import java.util.List; 
  import java.util.ArrayList; 
+ import java.io.InputStream;
+ import java.io.StringBufferInputStream;
+ import java.io.FileInputStream;
 }
 @lexer::header {
  package tiemens.util.resources.antlr; 
@@ -33,9 +37,29 @@ grammar Resource;
     /** Store arguments ?  */
     List argList = new ArrayList();
 
-    public static void main(String[] args) throws Exception {
-        ANTLRInputStream input = new ANTLRInputStream(System.in);
-        // input = new ANTLRFileStream(args[0]));
+    public static void main(String[] args) throws Exception 
+    {
+        ANTLRInputStream input = null;
+        
+        if (args.length > 0)
+        {
+            String arg = args[0];
+            if (arg.indexOf(" ") >= 0)
+            {
+               System.out.println("STRING is " + arg);
+               InputStream is = new StringBufferInputStream(arg);
+               input = new ANTLRInputStream(is);
+            }
+            else
+            {
+               input = new ANTLRInputStream(new FileInputStream(arg)); // ANTLRFileStream(arg);
+            }
+        }
+        else
+        {
+            input = new ANTLRInputStream(System.in);
+        }
+        // 
         ResourceLexer lexer = new ResourceLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -54,47 +78,71 @@ grammar Resource;
 }
 
 
-prog:   instance* ;
+prog
+    :  instance+ ;
                 
-instance
+instance returns [List<Object> instances]
     :   '(' c=command name=classname  l=line ')'    
                          {System.out.println("command-is " + $c.value + 
                                              " classname=[" + $name.value + "]");
                           System.out.println("list.size=" + $l.row.size());
-                          System.out.println(l); 
+                          System.out.println(l);
+                          Object a = new String("ab"); 
+                          /* $instances.add(a);} )+ */ 
                          }
     ;
 
 command returns [String value]
     :  c=COMMAND  {$value = $c.getText();}
     ;
- 
- classname returns [String value]
-    : '"' c=CLASSNAME '"'    {$value = $c.getText();}
+
+/* The Upper first letter turns it into a lexer item */
+COMMAND returns [String value]
+    :  c='new'    {$value = $c.getText();} 
     ;
+    
+ 
+classname returns [String value]
+    : '"'  c=identdotident '"'     {$value = $c.value;}
+    | '\'' c=identdotident '\''    {$value = $c.value;}
+    ;
+
+identdotident returns [String value]  
+     : c=IDENTIFIER ('.' IDENTIFIER)* {$value = $c.getText(); }
+     ;
+     
+IDENTIFIER
+     : ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9')+ 
+     ;
+
     
  argslist returns [Object value]
     : 
     ;
     
     
+  /* Hard lesson #1 : Things that aren't used but REFERENCE things still
+      cause errors 
+errorline : (NUMBER) +       
+      */
+      
+  /* Hard lesson #2 :  [Start-With-Upper = LEX  start-With-Lower = PARSE] */
+numberRetValue returns [Integer value]
+  : (v=NUMBER {$value = new Integer(v.getText()); })
+  ;
 
-Number
+
+NUMBER
   :  ('0'..'9')+
   ;
   
+  
+
 line returns [List<Integer> row]
-@init {
-  $row = new ArrayList<Integer>();
-}
-  :  ( a=Number {$row.add(Integer.parseInt($a.text));} )+ 
+@init {  $row = new ArrayList<Integer>();   }
+  :  ( a=numberRetValue {$row.add($a.value);} )+ 
   ;
-    
-    
-    
-COMMAND returns [String value]
-    :  c='new'    {$value = $c.getText();} 
-    ;
+  
     
 
 
@@ -109,13 +157,6 @@ NEWLINE
   |  '\r'
   ;
   
-CLASSNAME  
-     : IDENTIFIER ('.' IDENTIFIER)+
-     ;
-     
-IDENTIFIER
-     : ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9')+ 
-     ;
 
 /*
 ID         :   ('a'..'z'|'A'..'Z')+ ;
