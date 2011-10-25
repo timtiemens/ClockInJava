@@ -24,7 +24,8 @@
             Compile everything
          =================================================================== -->
     <path id="compile.classpath">
-       <pathelement location="lib/antlr-3.4-complete-no-antlrv2.jar"/>
+       <pathelement location="lib/antlr-3.4-complete-no-antlrv2.jar" />
+       <pathelement location="lib/commons-lang3-3.0.1.jar" />
 <!--
        <fileset dir="./lib">
           <include name="*.jar"/>
@@ -33,7 +34,10 @@
     </path>
     <path id="run.classpath">
        <!-- TODO: change this to refid compile.classpath -->
+<!--
        <pathelement location="lib/antlr-3.4-complete-no-antlrv2.jar"/>
+-->
+       <path refid="compile.classpath" />
        <pathelement path="build/classes"/>
     </path>
     <target name="compile">
@@ -47,7 +51,9 @@
     <target name="generate-Instancer">
       <java classname="org.antlr.Tool"
             dir="src/java/tiemens/util/resources/antlr"
-            fork="true">
+            fork="true"
+            failonerror="true"
+      >
         <classpath refid="compile.classpath" />
         <arg value="Instancer.g" />
       </java>
