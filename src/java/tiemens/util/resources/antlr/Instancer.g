@@ -12,6 +12,8 @@ grammar Instancer;
 
 
 @members {
+    private InstancerCode instancerCode = new InstancerCode();
+    
     public static void main(String[] args) 
        throws Exception 
     {
@@ -20,13 +22,17 @@ grammar Instancer;
 
         InstancerParser parser = new InstancerParser(tokens);
 
-        try {
+        try 
+        {
             List<Object> thelist = parser.top();
+            
             System.out.println("MAIN: toplist.size() = " + thelist.size());
             Object zero = thelist.get(0);
             System.out.println("MAIN: [0]=" + zero);
             System.out.println("MAIN: class name=" + zero.getClass().getName());
-        } catch (RecognitionException e)  {
+        } 
+        catch (RecognitionException e)  
+        {
             e.printStackTrace();
         }
     }
@@ -38,12 +44,22 @@ grammar Instancer;
 
 top returns [List<Object> toplist]
            @init { $toplist = new java.util.ArrayList<Object>(); }
-    : c=topInner { toplist.add($c.value); }
+    : initStatements? c=topInner { toplist.add($c.value); }
+    ;
+    
+initStatements
+    : '{' (initStatementChoice ';')* '}'
     ;
 
+initStatementChoice
+    : 'import'  clz=classname    { System.out.println("I see import of " + $clz.value); }
+    | 'logging' c=STRINGLITERAL  { System.out.println("I see logging of " + 
+                                             instancerCode.unescape($c.getText())); }
+    ;  
+   
 topInner returns [Object value]
-    : '(' cmd=command clz=classname args=topInner? ')' { $value = InstancerCode.create($cmd.value, $clz.value, $args.value); }
-    | c=STRINGLITERAL                                  { $value = InstancerCode.unescape(c.getText()); }
+    : '(' cmd=command clz=classname args=topInner? ')' { $value = instancerCode.create($cmd.value, $clz.value, $args.value); }
+    | c=STRINGLITERAL                                  { $value = instancerCode.unescape(c.getText()); }
     ;
     
 command returns [String value] 
