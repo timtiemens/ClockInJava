@@ -68,23 +68,13 @@ command returns [String value]
 
 classname returns [String value]
     :  c=CLASSNAME  { $value = $c.getText(); } 
-    |  c=IDENTIFIER { $value = $c.getText(); }   /*NOTE-5*/
+    |  c=IDENTIFIER { $value = $c.getText(); }   /* see NOTE-3 */
     ;
 
-/* Note-5 - 
-    started with just c=CLASSNAME. 
-    then, when I tried input of << (new Date "12345") >>
-       I got an error:     
-          in.txt line 3:5 mismatched input 'Date' expecting CLASSNAME
-    The tokens CLASSNAME and IDENTIFIER collide, so, of course,
-       adding c=IDENTIFIER makes the error go away.
-    Then, the "bare" Date matches IDENTIFIER.
- */
-           
        
 
 /*------------------------------------------------------------------
- * LEXER RULES
+ * LEXER RULES  [see Note-1]
  *------------------------------------------------------------------*/
    
 IDENTIFIER 
@@ -105,7 +95,7 @@ QUOTEDLITERAL
         )* 
         '"'    { setText( getText().substring(1, getText().length() - 1)); }
     ;
-/* http://www.antlr.org/wiki/display/ANTLR3/Lexer+grammar+for+floating+point,+dot,+range,+time+specs */
+
 
 fragment
 EscapeSequence 
@@ -118,21 +108,15 @@ EscapeSequence
              |   '\"' 
              |   '\'' 
              |   '\\' 
-             |       
-                 ('0'..'3') ('0'..'7') ('0'..'7')
-             |       
-                 ('0'..'7') ('0'..'7') 
-             |       
-                 ('0'..'7')
+             |   ('0'..'3') ('0'..'7') ('0'..'7')
+             |   ('0'..'7') ('0'..'7') 
+             |   ('0'..'7')
              )          
     ;     
 
-
-/* Note-1: It turns out even if a rule isn't ''used'' it is still
-           part of the global lexer space.
-           So, having extra stuff is a bad idea..
- */
-/*
+           
+ 
+/*    [See Note-2]
 STRING
    : '"' ( options {greedy=false;}:  ~'"' )*  '"';   */
    /*   : '"' ( options {greedy=false;}:  ~'"'  | '""')*  '"' */
@@ -145,3 +129,25 @@ STRING
 WHITESPACE : ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+    { $channel = HIDDEN; } ;
 
 fragment DIGIT  : '0'..'9' ;
+
+
+/* Reference URLs
+     http://jnb.ociweb.com/jnb/jnbJun2008.html
+     http://www.antlr.org/wiki/display/ANTLR3/Lexer+grammar+for+floating+point,+dot,+range,+time+specs 
+ */
+/* Note-1: IfItStartsWithUpper - it is a lexer rule
+           ifItStartsWithLower - it is a parser rule
+ */
+/* Note-2: It turns out even if a rule isn't ''used'' it is still
+           part of the global lexer space.
+           So, having extra stuff is a bad idea..
+ */
+ /* Note-3 - 
+    started with just c=CLASSNAME. 
+    then, when I tried input of << (new Date "12345") >>
+       I got an error:     
+          in.txt line 3:5 mismatched input 'Date' expecting CLASSNAME
+    The tokens CLASSNAME and IDENTIFIER collide, so, of course,
+       adding c=IDENTIFIER makes the error go away.
+    Then, the "bare" Date matches IDENTIFIER.
+ */
