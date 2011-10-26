@@ -52,14 +52,14 @@ initStatements
     ;
 
 initStatementChoice
-    : 'import'  clz=classname    { System.out.println("I see import of " + $clz.value); }
-    | 'logging' c=STRINGLITERAL  { System.out.println("I see logging of " + 
-                                             instancerCode.unescape($c.getText())); }
+    : 'import'  clz=classname    { instancerCode.addImport($clz.value); }
+    | 'logging' c=QUOTEDLITERAL  { instancerCode.configureLogging( 
+                                        instancerCode.unescape($c.getText())); }
     ;  
    
 topInner returns [Object value]
     : '(' cmd=command clz=classname args=topInner? ')' { $value = instancerCode.create($cmd.value, $clz.value, $args.value); }
-    | c=STRINGLITERAL                                  { $value = instancerCode.unescape(c.getText()); }
+    | c=QUOTEDLITERAL                                  { $value = instancerCode.unescape(c.getText()); }
     ;
     
 command returns [String value] 
@@ -67,9 +67,21 @@ command returns [String value]
     ;
 
 classname returns [String value]
-    :  c=CLASSNAME  { $value = $c.getText(); }
+    :  c=CLASSNAME  { $value = $c.getText(); } 
+    |  c=IDENTIFIER { $value = $c.getText(); }   /*NOTE-5*/
     ;
 
+/* Note-5 - 
+    started with just c=CLASSNAME. 
+    then, when I tried input of << (new Date "12345") >>
+       I got an error:     
+          in.txt line 3:5 mismatched input 'Date' expecting CLASSNAME
+    The tokens CLASSNAME and IDENTIFIER collide, so, of course,
+       adding c=IDENTIFIER makes the error go away.
+    Then, the "bare" Date matches IDENTIFIER.
+ */
+           
+       
 
 /*------------------------------------------------------------------
  * LEXER RULES
@@ -78,6 +90,7 @@ classname returns [String value]
 IDENTIFIER 
    : ('A' .. 'Z' | 'a' .. 'z') ('A' .. 'Z' | 'a' .. 'z' | DIGIT )*
    ;
+   
 CLASSNAME
    : IDENTIFIER ( '.' IDENTIFIER )*
    ;
@@ -85,13 +98,14 @@ CLASSNAME
 NUMBER  : (DIGIT)+ ;
 
 
-STRINGLITERAL
+QUOTEDLITERAL
     :   '"' 
         (   EscapeSequence
         |   ~( '\\' | '"' | '\r' | '\n' )        
         )* 
         '"'    { setText( getText().substring(1, getText().length() - 1)); }
     ;
+/* http://www.antlr.org/wiki/display/ANTLR3/Lexer+grammar+for+floating+point,+dot,+range,+time+specs */
 
 fragment
 EscapeSequence 
@@ -111,10 +125,13 @@ EscapeSequence
              |       
                  ('0'..'7')
              )          
-;     
+    ;     
 
 
-
+/* Note-1: It turns out even if a rule isn't ''used'' it is still
+           part of the global lexer space.
+           So, having extra stuff is a bad idea..
+ */
 /*
 STRING
    : '"' ( options {greedy=false;}:  ~'"' )*  '"';   */

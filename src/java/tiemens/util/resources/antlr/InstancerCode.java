@@ -20,15 +20,67 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
 public class InstancerCode
 {
-    public static Object create(final String command,
-                                final String clzname,
-                                final Object argobj)
+    // ==================================================
+    // class static data
+    // ==================================================
+
+    // ==================================================
+    // class static methods
+    // ==================================================
+
+    // ==================================================
+    // instance data
+    // ==================================================
+    /**
+     * Maps a short name (e.g. "Date") to the FQN (e.g. "java.util.Date")
+     */
+    private Map<String, String> importMap = new HashMap<String, String>();
+    
+    // ==================================================
+    // factories
+    // ==================================================
+
+    // ==================================================
+    // constructors
+    // ==================================================
+
+    // ==================================================
+    // public methods
+    // ==================================================
+
+    public void addImport(final String fullyQualifiedName)
+    {
+        System.out.println("I see import of '" + fullyQualifiedName + "'");
+        String[] pieces = fullyQualifiedName.split("\\.");
+        System.out.println("#pieces = " + pieces.length);
+        final String key = pieces[pieces.length - 1];
+        System.out.println("Import '" + key + "' to '" + fullyQualifiedName + "'");
+        importMap.put(key, fullyQualifiedName);
+    }
+    
+    public void configureLogging(final String loggingConfigureString)
+    {
+        System.out.println("I see logging of '" + loggingConfigureString + "'");   
+    }
+    
+    public String unescape(final String input)
+    {
+        String ret = StringEscapeUtils.unescapeJava(input);
+        
+        return ret;
+    }
+
+    public Object create(final String command,
+                         final String clzname,
+                         final Object argobj)
     {
         Object ret;
         ret = new String("Instancer[cmd='" + command + 
@@ -42,9 +94,13 @@ public class InstancerCode
         
         return ret;
     }
-    
-    private static Object createNew(String clzname, 
-                                    Object argobj) 
+
+    // ==================================================
+    // non public methods
+    // ==================================================
+
+    private Object createNew(String clzname, 
+                             Object argobj) 
     {
         System.out.println("clzname='" + clzname + "'");
         System.out.println("argobj.class=" + argobj.getClass().getName());
@@ -53,7 +109,7 @@ public class InstancerCode
         Object ret = null;
         try 
         {
-            Class<?> c = Class.forName(clzname);
+            Class<?> c                = getClassForName(clzname);
             Object[] parameters       = getParametersFromArgObj(argobj);
             Class<?>[] parameterTypes = getParameterTypesFromArgObj(parameters, argobj);
             
@@ -96,8 +152,29 @@ public class InstancerCode
         return ret;
     }
 
-    private static Constructor<?> getConstructor(Class<?> dclz,
-                                                 Class<?>[] parameterTypes)
+
+    private Class<?> getClassForName(String clzname) 
+        throws ClassNotFoundException
+    {
+        String usename = clzname;
+        if (importMap.containsKey(usename))
+        {
+            usename = importMap.get(usename);
+        }
+        try
+        {
+            return Class.forName(usename);
+        }
+        catch (ClassNotFoundException e)
+        {
+            System.out.println("Failed to find class '" + usename + "' [from '" +
+                               clzname + "']");
+            throw e;
+        }
+    }
+
+    private Constructor<?> getConstructor(Class<?> dclz,
+                                          Class<?>[] parameterTypes)
         throws NoSuchMethodException
     {
         Constructor<?> ret = null;
@@ -146,7 +223,7 @@ public class InstancerCode
         return ret;
     }
 
-    private static Object[] getParametersFromArgObj(Object argobj) 
+    private Object[] getParametersFromArgObj(Object argobj) 
     {
         List<Object> ret = new ArrayList<Object>();
         
@@ -163,8 +240,8 @@ public class InstancerCode
         return ret.toArray(new Object[0]);
     }
 
-    private static Class<?>[] getParameterTypesFromArgObj(Object[] parameters,
-                                                          Object argobj) 
+    private Class<?>[] getParameterTypesFromArgObj(Object[] parameters,
+                                                   Object argobj) 
     {
         List<Class<?>> ret = new ArrayList<Class<?>>();
         for (Object p : parameters)
@@ -174,11 +251,5 @@ public class InstancerCode
         return ret.toArray(new Class[0]);
     }
 
-    public static String unescape(final String input)
-    {
-        String ret = StringEscapeUtils.unescapeJava(input);
-        
-        return ret;
-    }
 }
 
